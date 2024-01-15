@@ -117,7 +117,7 @@
 
 ### Assumptions  
 
-> Model, Data Source, Projection layer, Module 모두에서 불러오기가 가능하다.
+> Model, Data Source, Projection layer, Module 모두에서 참조가 가능하다.
 >>
 >> ### 불러오는 법
 >>
@@ -129,7 +129,7 @@
 >> 6. `리더 선택` : (R3s : Algo FM, csv : CSV Reader, xlsx : Excel Files)
 >> 7. `연결 테스트`
 
->> ### Assumption Set 내 설정.
+>> ### Assumption Set 내 설정
 >>
 >> 1. 주로 `.xlsx` 형식 사용 
 >> 2. 엑셀 파일 내 이름 지정된 영역의 이름을 `Assumption Table`에 입력   
