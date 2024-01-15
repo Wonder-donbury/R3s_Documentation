@@ -2,7 +2,10 @@
 
 ## History  
 
-2024-01-11 : 작성 시작 (0.01) - 이동환
+<span style="font-size:50">
+2024-01-11 : 작성 시작 (0.01) - 이동환 </br>
+2024-01-15 : 1/11 교육분 작성 완료 - 이동환
+</span>
 
 ---
 
@@ -118,13 +121,39 @@
 >>
 >> ### 불러오는 법
 >>
->> 
->> 
+>> 1. `External assumption connection string` 클릭
+>> 2. `locate database connect string`
+>> 3. `데이터 연결 속성`
+>> 4. `ODBC 선택` - 엑셀 Base 시
+>> 5. `데이터 원본 선택` - 컴퓨터 데이터 원본
+>> 6. `리더 선택` : (R3s : Algo FM, csv : CSV Reader, xlsx : Excel Files)
+>> 7. `연결 테스트`
+
+>> ### Assumption Set 내 설정.
+>>
+>> 1. 주로 `.xlsx` 형식 사용 
+>> 2. 엑셀 파일 내 이름 지정된 영역의 이름을 `Assumption Table`에 입력   
+>> 2-1 혹은 `locate table`(우클릭) 사용  
+>> 2-2 혹은 `formula` 직접 입력
+>> 3. `Formula` 창에 인덱싱 및 `specify dimension`
+>>
+>>> **EX)**  
+>>> |Dimension|Name|Start Position|Data Type|
+>>> |:---------:|----|--------------:|:---------:|
+>>> |1 차원|name 1|1|char|
+>>> |2 차원|name 2|1|char|
+>>> |...|...|...|...|
+>>> |n 차원|name N|1|char|  
+>>> 
+>>> 최근자 코드부터 `Start Position` = 0이 표준임.
+
+
 >> ### 주의사항
 >>
 >> 각 컴포넌트에서 호출 시마다 Assumption 데이터를 참조하게 되어 데이터 로드에 걸리는 시간이 길다.  
->> ㄴ 우회법: Initialization module에 한 번 호출 후 필요한 값에 대해서 계속 유지시키는 방법이 있다.
->>
+>>> 우회법: Initialization module에 한 번 호출 후 필요한 값에 대해서 계속 유지시키는 방법이 있다.  
+>>`Assumption Variables` : `Portfolio` = N by default  
+>>`Assumption` 변수 : (임의) Assumption Set과 관련된 엑셀파일 상대주소명.
 
 <span style="font-size: 10px;">
 
@@ -136,6 +165,20 @@
 
 ### Batches  
 
+>
+>#### Batch 내 모델 간 리턴값 I/O  
+>
+>```mermaid
+>   flowchart LR
+>       subgraph Batch
+>       model1 --> model1_result
+>       model1_result --> model2
+>       model2 --> model2_result
+>       model2_result --> model3
+>       end
+>```
+>
+>한 모델 출력/저장 후 해당 파일을 다음 모델로 입력하는 방식
 <span style="font-size: 10px;">
 
 [목차로 돌아가기](#목차)
@@ -169,6 +212,17 @@
 
 > ### 데이터 불러오기 기능
 >
+>> `절대참조` : 주소 리터럴 기준.   
+>> `상대참조` : wvr 파일 저장폴더 기준, 시스템 변수 `<Workspace_Folder>`를 사용함.   
+>>> **Ex:** `<Workspace_Folder>`data.csv  ▶️ 해당 시스템 변수 스트링 -> 백슬래시(\\)로 끝남.
+>>
+>> #### Beware
+>>
+>> `Header lines to skip` : 헤더 있으면 헤더 행 수 만큼 skip  
+>> `Decimal point` : 자릿수 구분 문자 [Comma - ','] , [Period - '.'] 중 택일.  
+>> `유니코드 에러` : 영어, 숫자 사용 권장.  
+>> `Record Start/End date`   :   
+>> `Record Identifier` : Record Identifier로 지정된 열은 char로 읽어온다.
 
 <span style="font-size: 10px;">
 
@@ -261,6 +315,9 @@
 
 ### Models
 
+>#### DB 업로드
+>
+> 모델 속성 : `Database output` : `Internal`(엑셀), `Database`(DB)
 <span style="font-size: 10px;">
 
 [목차로 돌아가기](#목차)
@@ -333,8 +390,7 @@
 
 >### Rollback 변수
 >
-> 반대 스텝 방향으로 돌아가는 변수이다.   
-> **t시점**부터 **0시점**까지 -1스텝 씩 돌아간다.  
+> 반대 스텝 방향으로 돌아가는 변수이다. **t시점**부터 **0시점**까지 -1스텝 씩 돌아간다.  
 
 >### 포트폴리오 변수
 >
@@ -349,6 +405,17 @@
 >
 >### 변수 참조 속성
 >
+>
+> ```mermaid
+>   %%{init: { 'logLevel': 'debug', 'theme': 'base', 'timeline': {'disableMulticolor': false}}}%%
+>   timeline
+>       title 변수 참조 방법
+>       t-1 : B.Start 
+>       t : B.End / A.start
+>       t+1: A.End
+>```
+>
+>
 >#### `<변수명>.Prev`
 >
 > 포트폴리오 속성이 Y일 때, 직전 스텝의 값을 참조한다.
@@ -362,6 +429,7 @@
 >#### `<변수명>.Total`
 
 >#### 특정 시기의 정보를 참조하고 싶을 때
+>
 >> 해당 레이어 전체 복제 후 계산결과에서 참조.  
 >> or 어레이를 생성하여 스택(Stack) 방식으로 `t-n` 시기의 값을 저장한다. 
 >> 
